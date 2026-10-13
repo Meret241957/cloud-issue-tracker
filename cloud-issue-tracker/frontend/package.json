@@ -1,5 +1,6 @@
 {
   "scripts": {
-    "start": "http-server . -p 8080"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   }
 }
