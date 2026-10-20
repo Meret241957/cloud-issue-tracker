@@ -1,10 +1,8 @@
-readIssues();
-createIssue(input);
-updateIssueStatus(id, status);
 const fs = require("fs/promises");
 const path = require("path");
 const { randomUUID } = require("crypto");
-const DATA_FILE = path.join(_dirname, " .. ", "data", "issues.json");
+
+const DATA_FILE = path.join(__dirname, "..", "data", "issues.json");
 
 async function readIssues() {
   try {
@@ -12,10 +10,14 @@ async function readIssues() {
     return JSON.parse(text);
   } catch (error) {
     if (error.code === "ENOENT") {
-      throw error;
+      // Return an empty array if the file doesn't exist yet
+      return [];
     }
+    // Re-throw other errors (like invalid JSON syntax)
+    throw error;
   }
 }
+
 async function writeIssues(issues) {
   await fs.writeFile(DATA_FILE, JSON.stringify(issues, null, 2));
 }
@@ -35,6 +37,7 @@ async function createIssue(input) {
   await writeIssues(issues);
   return issue;
 }
+
 async function updateIssueStatus(id, status) {
   const issues = await readIssues();
   const issue = issues.find((item) => item.id === id);
